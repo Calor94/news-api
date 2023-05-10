@@ -3,6 +3,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const connection = require("../db/connection");
+const endpointFile = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(data);
@@ -19,6 +20,17 @@ describe("Invalid endpoint", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Page not found");
+      });
+  });
+});
+
+describe("/api", () => {
+  test("GET /api responds with status 200 and JSON object", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(endpointFile);
       });
   });
 });

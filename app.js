@@ -1,6 +1,8 @@
 const express = require("express");
-const { getTopics } = require("./controllers/get.controllers");
+const { getTopics, getApiEndpoints } = require("./controllers/get.controllers");
 const app = express();
+
+app.get("/api", getApiEndpoints);
 
 app.get("/api/topics", getTopics);
 
@@ -9,7 +11,6 @@ app.all("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(500).send("Internal Server Error");
 });
 
