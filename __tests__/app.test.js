@@ -111,3 +111,39 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET /api/articles/:article_id/comments responds with status 200 and an array of comments for the given article id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.length).toBe(11);
+        body.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+        expect(body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET /api/articles/:article_id/comments responds with status 404 and error message when given a valid id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/621/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No comments found for article_id 621");
+      });
+  });
+  test("GET /api/articles/:article_id/comments responds with status 400 and error message when given an invalid id", () => {
+    return request(app)
+      .get("/api/articles/notanumber/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+});
