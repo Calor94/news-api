@@ -58,6 +58,9 @@ describe("/api/articles", () => {
       .then(({ body }) => {
         expect(body.articles.length).toBe(12);
         body.articles.forEach((article) => {
+          if (article.article_id === 1) {
+            expect(article.comment_count).toBe(11);
+          }
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
           expect(typeof article.article_id).toBe("number");
@@ -66,6 +69,7 @@ describe("/api/articles", () => {
           expect(typeof article.votes).toBe("number");
           expect(typeof article.article_img_url).toBe("string");
           expect(typeof article.comment_count).toBe("number");
+          expect(article.hasOwnProperty("body")).toBe(false);
         });
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
