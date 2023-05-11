@@ -20,9 +20,3 @@ exports.fetchArticle = (articleId) => {
       return article;
     });
 };
-
-// exports.selectSnackById = (snack_id) => {
-//   return db
-//     .query("SELECT * FROM snacks WHERE snack_id = $1;", [snack_id])
-//     .then((result) => result.rows[0]);
-// };

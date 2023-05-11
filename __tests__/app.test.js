@@ -58,7 +58,7 @@ describe("/api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(typeof body.author).toBe("string");
         expect(typeof body.title).toBe("string");
-        expect(typeof body.article_id).toBe("number");
+        expect(body.article_id).toBe(5);
         expect(typeof body.body).toBe("string");
         expect(typeof body.topic).toBe("string");
         expect(typeof body.created_at).toBe("string");
