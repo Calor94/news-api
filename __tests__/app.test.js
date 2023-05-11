@@ -130,12 +130,20 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("GET /api/articles/:article_id/comments responds with status 200 and an empty array, when given an article id that exists, but has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual([]);
+      });
+  });
   test("GET /api/articles/:article_id/comments responds with status 404 and error message when given a valid id that does not exist", () => {
     return request(app)
       .get("/api/articles/621/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("No comments found for article_id 621");
+        expect(body.msg).toBe("Article 621 does not exist");
       });
   });
   test("GET /api/articles/:article_id/comments responds with status 400 and error message when given an invalid id", () => {

@@ -32,18 +32,24 @@ exports.fetchArticleById = (articleId) => {
 };
 
 exports.fetchCommentsByArticleId = (articleId) => {
-  return connection
-    .query(
-      "SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = $1 ORDER BY created_at DESC;",
-      [articleId]
-    )
-    .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: `No comments found for article_id ${articleId}`,
-        });
-      }
-      return rows;
-    });
+  const commentsQuery = connection.query(
+    "SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = $1 ORDER BY created_at DESC;",
+    [articleId]
+  );
+  const articleExistsQuery = connection.query(
+    "SELECT * FROM articles WHERE article_id = $1",
+    [articleId]
+  );
+  return Promise.all([commentsQuery, articleExistsQuery]).then((result) => {
+    const commentsRows = result[0].rows;
+    const articlesRows = result[1].rows;
+    console.log(result, "<<< RESULT FROM MODEL");
+    if (commentsRows.length === 0 && !articlesRows[0]) {
+      return Promise.reject({
+        status: 404,
+        msg: `Article ${articleId} does not exist`,
+      });
+    }
+    return commentsRows;
+  });
 };
