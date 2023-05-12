@@ -52,5 +52,16 @@
       "body": "I hate streaming noses",
       "article_id": 1
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a new comment to the comments table and responds with that comment`",
+    "queries": [],
+    "exampleResponse": {
+      "body": "Your custom body",
+      "votes": 0,
+      "author": "butter_bridge",
+      "article_id": 1,
+      "created_at": 1604113380000
+    }
   }
 }
