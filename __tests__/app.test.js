@@ -171,6 +171,20 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.comment.created_at).not.toBe(undefined);
       });
   });
+  test("POST /api/articles/:article_id/comments responds with status 201 and the posted comment - even when posted with extra properties on the body", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "icellusedkars", body: "Test...", name: "Hannah" })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment.comment_id).toBe(19);
+        expect(body.comment.body).toBe("Test...");
+        expect(body.comment.article_id).toBe(2);
+        expect(body.comment.author).toBe("icellusedkars");
+        expect(body.comment.votes).toBe(0);
+        expect(body.comment.created_at).not.toBe(undefined);
+      });
+  });
   test("POST /api/articles/:article_id/comments responds with status 400 and an error message when passed with an empty object", () => {
     return request(app)
       .post("/api/articles/2/comments")
