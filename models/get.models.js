@@ -52,3 +52,13 @@ exports.fetchCommentsByArticleId = (articleId) => {
     return commentsRows;
   });
 };
+
+exports.setComment = (article_id, username, body) => {
+  const setValues = [article_id, username, body];
+  return connection
+    .query(
+      "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
+      setValues
+    )
+    .then(({ rows }) => rows[0]);
+};
