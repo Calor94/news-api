@@ -155,3 +155,74 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST /api/articles/:article_id/comments responds with status 201 and the posted comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "icellusedkars", body: "Test..." })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment.comment_id).toBe(19);
+        expect(body.comment.body).toBe("Test...");
+        expect(body.comment.article_id).toBe(2);
+        expect(body.comment.author).toBe("icellusedkars");
+        expect(body.comment.votes).toBe(0);
+        expect(body.comment.created_at).not.toBe(undefined);
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 400 and an error message when passed with an empty object", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please enter username and body");
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 400 and an error message when missing body", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "icellusedkars" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please enter username and body");
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 400 and an error message when missing username", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ body: "Test..." })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Please enter username and body");
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 404 and error message when passed with a valid article id that does not exist", () => {
+    return request(app)
+      .post("/api/articles/2124/comments")
+      .send({ username: "icellusedkars", body: "Test..." })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 400 and error message when passed with an invalid article id", () => {
+    return request(app)
+      .post("/api/articles/invalid/comments")
+      .send({ username: "icellusedkars", body: "Test..." })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("POST /api/articles/:article_id/comments responds with status 400 and error message when passed with a username that does not exist", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "unknown", body: "Test..." })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
