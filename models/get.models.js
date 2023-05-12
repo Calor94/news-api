@@ -43,7 +43,6 @@ exports.fetchCommentsByArticleId = (articleId) => {
   return Promise.all([commentsQuery, articleExistsQuery]).then((result) => {
     const commentsRows = result[0].rows;
     const articlesRows = result[1].rows;
-    console.log(result, "<<< RESULT FROM MODEL");
     if (commentsRows.length === 0 && !articlesRows[0]) {
       return Promise.reject({
         status: 404,
