@@ -240,3 +240,81 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH /api/articles/:article_id responds with status 200 and the article with the updated votes", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article[0].article_id).toBe(1);
+        expect(typeof body.article[0].title).toBe("string");
+        expect(typeof body.article[0].topic).toBe("string");
+        expect(typeof body.article[0].author).toBe("string");
+        expect(typeof body.article[0].body).toBe("string");
+        expect(typeof body.article[0].created_at).toBe("string");
+        expect(body.article[0].votes).toBe(105);
+        expect(typeof body.article[0].article_img_url).toBe("string");
+      });
+  });
+  test("PATCH /api/articles/:article_id responds with status 200 and the article with the updated votes, when invoked with a minus inc_votes", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article[0].article_id).toBe(1);
+        expect(typeof body.article[0].title).toBe("string");
+        expect(typeof body.article[0].topic).toBe("string");
+        expect(typeof body.article[0].author).toBe("string");
+        expect(typeof body.article[0].body).toBe("string");
+        expect(typeof body.article[0].created_at).toBe("string");
+        expect(body.article[0].votes).toBe(90);
+        expect(typeof body.article[0].article_img_url).toBe("string");
+      });
+  });
+  test("Responds with status 200 and the article unchanged when passed an empty inc_votes object", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.article_id).toBe(1);
+        expect(typeof body.article.title).toBe("string");
+        expect(typeof body.article.topic).toBe("string");
+        expect(typeof body.article.author).toBe("string");
+        expect(typeof body.article.body).toBe("string");
+        expect(typeof body.article.created_at).toBe("string");
+        expect(body.article.votes).toBe(100);
+        expect(typeof body.article.article_img_url).toBe("string");
+      });
+  });
+  test("Responds with status 400 and an error message when passed an invalid article id", () => {
+    return request(app)
+      .patch("/api/articles/invalid")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("Responds with status 400 and an error message when passed an inc votes that isnt a number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "seven" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("Responds with status 404 and an error message when passed a valid article id that doesnt exist", () => {
+    return request(app)
+      .patch("/api/article/234")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Page not found");
+      });
+  });
+});

@@ -6,6 +6,7 @@ const {
   getArticles,
   getCommentsByArticleId,
   postComment,
+  incrementVotes,
 } = require("./controllers/get.controllers");
 const app = express();
 
@@ -22,6 +23,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.patch("/api/articles/:article_id", incrementVotes);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "Page not found" });

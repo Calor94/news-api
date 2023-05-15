@@ -4,6 +4,7 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
   setComment,
+  updateArticleVotes,
 } = require("../models/get.models");
 const endpointFile = require("../endpoints.json");
 
@@ -52,4 +53,20 @@ exports.postComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
+};
+
+exports.incrementVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  if (inc_votes === undefined || inc_votes === {}) {
+    fetchArticleById(article_id).then((article) => {
+      res.status(200).send({ article });
+    });
+  } else {
+    updateArticleVotes(article_id, inc_votes)
+      .then((article) => {
+        res.status(200).send({ article });
+      })
+      .catch(next);
+  }
 };

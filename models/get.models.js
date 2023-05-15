@@ -62,3 +62,25 @@ exports.setComment = (article_id, username, body) => {
     )
     .then(({ rows }) => rows[0]);
 };
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  const editArticleValues = [article_id, inc_votes];
+  const editArticleQuery = `
+	UPDATE articles
+	SET votes = votes + $2
+	WHERE article_id = $1
+	RETURNING *;`;
+  const articleExistsQuery = connection.query(
+    "SELECT * FROM articles WHERE article_id = $1",
+    [article_id]
+  );
+  const updateArticleQuery = connection.query(
+    editArticleQuery,
+    editArticleValues
+  );
+  return Promise.all([articleExistsQuery, updateArticleQuery]).then(
+    (result) => {
+      return result[1].rows;
+    }
+  );
+};
