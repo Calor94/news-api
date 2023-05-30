@@ -64,7 +64,7 @@
       "created_at": 1604113380000
     }
   },
-  "PATCH /api/reviews/:review_id": {
+  "PATCH /api/articles/:article_id": {
 		"description": "modifies the votes property of an article when passed an object {inc_votes: 1} with a number with which to modify the votes value",
     "queries": [],
 		"exampleResponse": {
